@@ -58,7 +58,6 @@ fun SideDrawerBody(
                         style = itemTextStyle,
                         modifier = Modifier.weight(1f)
                     )
-                
             }
         }
     }

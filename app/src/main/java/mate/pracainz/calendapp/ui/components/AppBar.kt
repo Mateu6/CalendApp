@@ -16,10 +16,10 @@ import mate.pracainz.calendapp.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(
-    onMenuItemIconClick: () -> Unit
+    onMenuIconClick: () -> Unit
 ) {
     TopAppBar(
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+        colors = TopAppBarDefaults.smallTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             titleContentColor = MaterialTheme.colorScheme.primary
         ),
@@ -27,7 +27,7 @@ fun AppBar(
             Text(text = stringResource(id = R.string.app_name))
         },
         navigationIcon = {
-            IconButton(onClick = onMenuItemIconClick) {
+            IconButton(onClick = onMenuIconClick) {
                 Icon(
                     imageVector = Icons.Default.Menu,
                     contentDescription = "Toggle drawer"
