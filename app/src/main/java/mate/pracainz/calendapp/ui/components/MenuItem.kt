@@ -6,5 +6,7 @@ data class MenuItem(
     val id: String,
     val title: String,
     val contentDescription: String,
-    val icon: ImageVector
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
+    val badgeCount: Int? = null
 )
