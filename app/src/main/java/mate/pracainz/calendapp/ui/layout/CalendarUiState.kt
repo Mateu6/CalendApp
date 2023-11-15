@@ -1,9 +1,9 @@
-package mate.pracainz.calendapp.ui.components
+package mate.pracainz.calendapp.ui.layout
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-data class CalendarUiModel(
+data class CalendarUiState(
     var selectedDate: Date,
     var visibleDates: List<Date>
 ) {

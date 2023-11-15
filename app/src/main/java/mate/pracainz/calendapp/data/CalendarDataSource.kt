@@ -1,5 +1,6 @@
-package mate.pracainz.calendapp.ui.components
+package mate.pracainz.calendapp.data
 
+import mate.pracainz.calendapp.ui.layout.CalendarUiState
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -15,7 +16,7 @@ class CalendarDataSource {
     fun getWeekData(
         startDate: LocalDate = today,
         lastSelectedDate: LocalDate
-    ): CalendarUiModel {
+    ): CalendarUiState {
         val firstDayOfWeek = startDate.with(DayOfWeek.MONDAY)
         val endDayOfWeek = firstDayOfWeek.plusDays(7)
         val visibleDatesWeek = getDatesBetween(firstDayOfWeek, endDayOfWeek)
@@ -26,7 +27,7 @@ class CalendarDataSource {
     fun getMonthData(
         startDate: LocalDate = today,
         lastSelectedDate: LocalDate
-    ): CalendarUiModel {
+    ): CalendarUiState {
         val firstDayOfMonth = startDate.withDayOfMonth(1)
         val lastDayOfMonth = startDate.withDayOfMonth(startDate.lengthOfMonth())
 
@@ -74,8 +75,8 @@ class CalendarDataSource {
     private fun toUiModel(
         dateList: List<LocalDate>,
         lastSelectedDate: LocalDate
-    ): CalendarUiModel {
-        return CalendarUiModel(
+    ): CalendarUiState {
+        return CalendarUiState(
             selectedDate = toItemUiModel(lastSelectedDate, true),
             visibleDates = dateList.map {
                 toItemUiModel(it, it.isEqual(lastSelectedDate))
@@ -86,7 +87,7 @@ class CalendarDataSource {
     private fun toItemUiModel(
         date: LocalDate,
         isSelectedDate: Boolean
-    ) = CalendarUiModel.Date(
+    ) = CalendarUiState.Date(
         isSelected = isSelectedDate,
         isToday = date.isEqual(today),
         date = date,

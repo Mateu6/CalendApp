@@ -18,11 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import mate.pracainz.calendapp.data.CalendarDataSource
+import mate.pracainz.calendapp.ui.layout.CalendarUiState
 import java.time.LocalDate
 
 @Composable
 fun CalendarHeader(
-    calendarUiModel: CalendarUiModel,
+    calendarUiState: CalendarUiState,
     dataSource: CalendarDataSource,
     onPrevClickListener: (LocalDate) -> Unit,
     onNextClickListener: (LocalDate) -> Unit,
@@ -33,7 +35,7 @@ fun CalendarHeader(
     Row {
         IconButton(onClick = {
             // invoke previous callback when its button clicked
-            val startDate = calendarUiModel.visibleDates.first().date.minusMonths(1)
+            val startDate = calendarUiState.visibleDates.first().date.minusMonths(1)
             onPrevClickListener(startDate)
             onMonthChanged(startDate.month.toString())
         }) {
@@ -43,18 +45,18 @@ fun CalendarHeader(
             )
         }
         Text(
-            text = calendarUiModel.selectedDate.date.month.toString(),
+            text = calendarUiState.selectedDate.date.month.toString(),
             modifier = Modifier
                 .weight(1f)
                 .align(Alignment.CenterVertically),
             style = MaterialTheme.typography.bodySmall,
             onTextLayout = {
                 // Trigger a recomposition when the text layout is calculated
-                onDateClickListener(calendarUiModel.selectedDate.date)
+                onDateClickListener(calendarUiState.selectedDate.date)
             }
         )
         IconButton(onClick = {
-            val endDate = calendarUiModel.visibleDates.last().date.plusMonths(1)
+            val endDate = calendarUiState.visibleDates.last().date.plusMonths(1)
             onNextClickListener(endDate)
             onMonthChanged(endDate.month.toString())
         }) {
@@ -78,7 +80,7 @@ fun CalendarHeader(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        items(items = calendarUiModel.visibleDates.chunked(7)) { weekDates ->
+        items(items = calendarUiState.visibleDates.chunked(7)) { weekDates ->
             LazyRow(
                 modifier = Modifier
                     .fillParentMaxWidth()
@@ -87,7 +89,7 @@ fun CalendarHeader(
                     CalendarItem(
                         date = date,
                         onDateClickListener,
-                        isCurrentMonth = date.date.month.equals(calendarUiModel.selectedDate.date.month)
+                        isCurrentMonth = date.date.month.equals(calendarUiState.selectedDate.date.month)
                     )
                 }
             }

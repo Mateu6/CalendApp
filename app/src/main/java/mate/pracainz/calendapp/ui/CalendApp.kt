@@ -38,11 +38,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import mate.pracainz.calendapp.ui.components.CalendarDataSource
+import mate.pracainz.calendapp.data.CalendarDataSource
 import mate.pracainz.calendapp.ui.components.CalendarHeader
 import mate.pracainz.calendapp.ui.components.CalendarItem
-import mate.pracainz.calendapp.ui.components.CalendarUiModel
 import mate.pracainz.calendapp.ui.components.MenuItem
+import mate.pracainz.calendapp.ui.layout.CalendarUiState
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -154,9 +154,9 @@ fun CalendAppContent() {
                         top = paddingValues.calculateTopPadding()
                     )
             ) {
-                Content(
+                CalendarContent(
                     dataSource = dataSource,
-                    calendarUiModel = calendarUiModel,
+                    calendarUiState = calendarUiModel,
                     onDateClickListener = { date ->
                         calendarUiModel = calendarUiModel.copy(
                             selectedDate = calendarUiModel.selectedDate,
@@ -195,9 +195,9 @@ fun CalendAppContent() {
 }
 
 @Composable
-fun Content(
+fun CalendarContent(
     dataSource: CalendarDataSource,
-    calendarUiModel: CalendarUiModel,
+    calendarUiState: CalendarUiState,
     onDateClickListener: (LocalDate) -> Unit,
     onPrevClickListener: (LocalDate) -> Unit,
     onNextClickListener: (LocalDate) -> Unit,
@@ -209,7 +209,7 @@ fun Content(
         item {
             CalendarHeader(
                 dataSource = dataSource,
-                calendarUiModel = calendarUiModel,
+                calendarUiState = calendarUiState,
                 onPrevClickListener = {startDate -> onPrevClickListener(startDate)},
                 onNextClickListener = {endDate -> onNextClickListener(endDate)},
                 onDateClickListener = onDateClickListener,
@@ -217,7 +217,7 @@ fun Content(
                 onMonthChanged = onMonthChanged
             )
         }
-        val datesByWeeks = calendarUiModel.visibleDates.chunked(7)
+        val datesByWeeks = calendarUiState.visibleDates.chunked(7)
 
         datesByWeeks.forEachIndexed { _, weekDates ->
             item {
@@ -228,16 +228,16 @@ fun Content(
                             onClickListener = {clickedDate ->
                                 onDateClickListener(clickedDate)
                                 // Determine if the clicked date is from the next/previous month
-                                if (clickedDate.month != calendarUiModel.selectedDate.date.month) {
+                                if (clickedDate.month != calendarUiState.selectedDate.date.month) {
                                     // Check if it's from the next month
-                                    if (clickedDate.isAfter(calendarUiModel.selectedDate.date)) {
+                                    if (clickedDate.isAfter(calendarUiState.selectedDate.date)) {
                                         onNextClickListener(clickedDate)
                                     } else {
                                         // It's from the previous month
                                         onPrevClickListener(clickedDate)
                                     }
                                 }},
-                            isCurrentMonth = date.date.month == calendarUiModel.selectedDate.date.month
+                            isCurrentMonth = date.date.month == calendarUiState.selectedDate.date.month
                         )
                     }
                 }

@@ -14,10 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
+import mate.pracainz.calendapp.ui.layout.CalendarUiState
 
 @Composable
 fun CalendarItem(
-    date: CalendarUiModel.Date,
+    date: CalendarUiState.Date,
     onClickListener: (java.time.LocalDate) -> Unit, // still, callback should be registered from outside
     isCurrentMonth: Boolean
 ) {

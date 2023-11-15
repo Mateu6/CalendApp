@@ -1,4 +1,4 @@
-package mate.pracainz.calendapp.ui
+package mate.pracainz.calendapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import mate.pracainz.calendapp.ui.CalendAppContent
 import mate.pracainz.calendapp.ui.theme.CalendAppTheme
 
 class MainActivity : ComponentActivity() {
