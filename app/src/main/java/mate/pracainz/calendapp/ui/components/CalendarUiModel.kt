@@ -4,17 +4,22 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 data class CalendarUiModel(
-    val selectedDate: Date, // the date selected by the User. by default is Today.
-    val visibleDates: List<Date> // the dates shown on the screen
+    var selectedDate: Date,
+    var visibleDates: List<Date>
 ) {
-    val startDate: Date = visibleDates.first() // the first of the visible dates
-    val endDate: Date = visibleDates.last() // the last of the visible dates
+    val startDate: Date get() = visibleDates.first()
+    val endDate: Date get() = visibleDates.last()
 
     data class Date(
         val date: LocalDate,
         val isSelected: Boolean,
         val isToday: Boolean
-    ) {
-        val day: String = date.format(DateTimeFormatter.ofPattern("E")) // get the day by formatting the date
+    ) : Comparable<Date> {
+        val day: String = date.format(DateTimeFormatter.ofPattern("E"))
+
+        override fun compareTo(other: Date): Int {
+            return this.date.compareTo(other.date)
+        }
     }
 }
+

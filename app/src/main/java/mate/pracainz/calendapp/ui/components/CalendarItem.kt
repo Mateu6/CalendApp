@@ -12,27 +12,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun CalendarItem(
     date: CalendarUiModel.Date,
-    onClickListener: (CalendarUiModel.Date) -> Unit, // still, callback should be registered from outside
+    onClickListener: (java.time.LocalDate) -> Unit, // still, callback should be registered from outside
+    isCurrentMonth: Boolean
 ) {
     Card(
         modifier = Modifier
             .padding(vertical = 4.dp, horizontal = 4.dp)
-            .clickable {
-                onClickListener(date)
-            },
+            .alpha(if (isCurrentMonth) 1f else 0.5f)
+            .clickable { onClickListener(date.date) },
         colors = CardDefaults.cardColors(
-            // background colors of the selected date
-            // and the non-selected date are different
             containerColor = if (date.isSelected) {
                 MaterialTheme.colorScheme.primary
             } else {
                 MaterialTheme.colorScheme.secondary
             }
+
         ),
     ) {
         Column(

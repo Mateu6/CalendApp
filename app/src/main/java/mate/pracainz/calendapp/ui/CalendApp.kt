@@ -5,10 +5,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
@@ -44,6 +43,7 @@ import mate.pracainz.calendapp.ui.components.CalendarHeader
 import mate.pracainz.calendapp.ui.components.CalendarItem
 import mate.pracainz.calendapp.ui.components.CalendarUiModel
 import mate.pracainz.calendapp.ui.components.MenuItem
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,8 +51,11 @@ fun CalendAppContent() {
     val dataSource = CalendarDataSource()
     var calendarUiModel by remember {
         mutableStateOf(
-            dataSource.getData(
-            lastSelectedDate = dataSource.today)) }
+            dataSource.getMonthData(
+                lastSelectedDate = dataSource.today
+            )
+        )
+    }
 
     val items = listOf(
         MenuItem(
@@ -147,32 +150,45 @@ fun CalendAppContent() {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = paddingValues.calculateTopPadding())
-                    .verticalScroll(rememberScrollState())
+                    .padding(
+                        top = paddingValues.calculateTopPadding()
+                    )
             ) {
-                CalendarHeader(data = calendarUiModel,
+                Content(
+                    dataSource = dataSource,
+                    calendarUiModel = calendarUiModel,
+                    onDateClickListener = { date ->
+                        calendarUiModel = calendarUiModel.copy(
+                            selectedDate = calendarUiModel.selectedDate,
+                            visibleDates = calendarUiModel.visibleDates.map {
+                                it.copy(
+                                    isSelected = it.date.isEqual(date)
+                                )
+                            }
+                        )
+                    },
                     onPrevClickListener = { startDate ->
-                        // refresh the CalendarUiModel with new data
-                        // by get data with new Start Date (which is the startDate-1 from the visibleDates)
                         val finalStartDate = startDate.minusDays(1)
-                        calendarUiModel = dataSource.getData(startDate = finalStartDate, lastSelectedDate = calendarUiModel.selectedDate.date)
+                        calendarUiModel =
+                            dataSource.getMonthData(
+                                startDate = finalStartDate,
+                                lastSelectedDate = calendarUiModel.selectedDate.date
+                            )
                     },
                     onNextClickListener = { endDate ->
-                        // refresh the CalendarUiModel with new data
-                        // by get data with new Start Date (which is the endDate+2 from the visibleDates)
                         val finalStartDate = endDate.plusDays(2)
-                        calendarUiModel = dataSource.getData(startDate = finalStartDate, lastSelectedDate = calendarUiModel.selectedDate.date)
-                    })
-                Content(data = calendarUiModel, onDateClickListener = { date ->
-                    calendarUiModel = calendarUiModel.copy(
-                        selectedDate = date,
-                        visibleDates = calendarUiModel.visibleDates.map {
-                            it.copy(
-                                isSelected = it.date.isEqual(date.date)
+                        calendarUiModel =
+                            dataSource.getMonthData(
+                                startDate = finalStartDate,
+                                lastSelectedDate = calendarUiModel.selectedDate.date
                             )
-                        }
-                    )
-                })
+                    },
+                    onResetClickListener = {
+                        calendarUiModel =
+                            dataSource.getMonthData(lastSelectedDate = dataSource.today)
+                    },
+                    onMonthChanged = {}
+                )
             }
         }
     }
@@ -180,16 +196,52 @@ fun CalendAppContent() {
 
 @Composable
 fun Content(
-    data: CalendarUiModel,
-    // callback should be registered from outside
-    onDateClickListener: (CalendarUiModel.Date) -> Unit,) {
-    LazyRow {
-        // pass the visibleDates to the UI
-        items(items = data.visibleDates) { date ->
-            CalendarItem(
-                date = date,
-                onDateClickListener
+    dataSource: CalendarDataSource,
+    calendarUiModel: CalendarUiModel,
+    onDateClickListener: (LocalDate) -> Unit,
+    onPrevClickListener: (LocalDate) -> Unit,
+    onNextClickListener: (LocalDate) -> Unit,
+    onResetClickListener: () -> Unit,
+    onMonthChanged: (String) -> Unit
+
+) {
+    LazyColumn {
+        item {
+            CalendarHeader(
+                dataSource = dataSource,
+                calendarUiModel = calendarUiModel,
+                onPrevClickListener = {startDate -> onPrevClickListener(startDate)},
+                onNextClickListener = {endDate -> onNextClickListener(endDate)},
+                onDateClickListener = onDateClickListener,
+                onResetClickListener = onResetClickListener,
+                onMonthChanged = onMonthChanged
             )
+        }
+        val datesByWeeks = calendarUiModel.visibleDates.chunked(7)
+
+        datesByWeeks.forEachIndexed { _, weekDates ->
+            item {
+                LazyRow {
+                    items(weekDates) { date ->
+                        CalendarItem(
+                            date = date,
+                            onClickListener = {clickedDate ->
+                                onDateClickListener(clickedDate)
+                                // Determine if the clicked date is from the next/previous month
+                                if (clickedDate.month != calendarUiModel.selectedDate.date.month) {
+                                    // Check if it's from the next month
+                                    if (clickedDate.isAfter(calendarUiModel.selectedDate.date)) {
+                                        onNextClickListener(clickedDate)
+                                    } else {
+                                        // It's from the previous month
+                                        onPrevClickListener(clickedDate)
+                                    }
+                                }},
+                            isCurrentMonth = date.date.month == calendarUiModel.selectedDate.date.month
+                        )
+                    }
+                }
+            }
         }
     }
 }
