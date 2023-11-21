@@ -28,13 +28,16 @@ class CalendarDataSource {
         startDate: LocalDate = today,
         lastSelectedDate: LocalDate
     ): CalendarUiState {
-        val firstDayOfMonth = startDate.withDayOfMonth(1)
-        val lastDayOfMonth = startDate.withDayOfMonth(startDate.lengthOfMonth())
+        // Calculate the start and end dates of the month containing lastSelectedDate
+        val firstDayOfMonthContainingSelection = lastSelectedDate.withDayOfMonth(1)
+        val lastDayOfMonthContainingSelection =
+            lastSelectedDate.withDayOfMonth(lastSelectedDate.lengthOfMonth())
 
-        val firstMonday = findFirstMonday(firstDayOfMonth)
-        val lastSunday = findLastSunday(lastDayOfMonth)
-
-        val visibleDatesMonth = getDatesBetween(firstMonday, lastSunday)
+        // Calculate the visible dates for the month containing lastSelectedDate
+        val visibleDatesMonth = getDatesBetween(
+            findFirstMonday(firstDayOfMonthContainingSelection),
+            findLastSunday(lastDayOfMonthContainingSelection)
+        )
 
         return toUiModel(visibleDatesMonth, lastSelectedDate)
     }
@@ -77,14 +80,14 @@ class CalendarDataSource {
         lastSelectedDate: LocalDate
     ): CalendarUiState {
         return CalendarUiState(
-            selectedDate = toItemUiModel(today, true),
+            selectedDate = toItemUiModel(lastSelectedDate, true),
             visibleDates = dateList.map {
                 toItemUiModel(it, it.isEqual(lastSelectedDate))
             },
         )
     }
 
-    private fun toItemUiModel(
+    fun toItemUiModel(
         date: LocalDate,
         isSelectedDate: Boolean
     ) = CalendarUiState.Date(

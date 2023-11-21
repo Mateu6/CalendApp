@@ -39,24 +39,23 @@ fun CalendarItem(
             } else {
                 MaterialTheme.colorScheme.secondary
             }
-
         ),
     ) {
         Column(
             modifier = Modifier
-                .width(40.dp)
-                .height(48.dp)
-                .padding(4.dp)
+                .width(50.dp)
+                .height(56.dp)
+                .padding(3.dp)
         ) {
             Text(
                 text = date.day, // day "Mon", "Tue"
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodyMedium,
             )
             Text(
                 text = date.date.dayOfMonth.toString(), // date "15", "16"
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
             )
         }
     }

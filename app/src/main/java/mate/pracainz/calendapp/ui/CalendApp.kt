@@ -156,31 +156,27 @@ fun CalendApp() {
                     calendarUiState = calendarUiModel,
                     onDateClickListener = { date ->
                         calendarUiModel = calendarUiModel.copy(
-                            selectedDate = calendarUiModel.selectedDate,
+                            selectedDate = dataSource.toItemUiModel(date, true),
                             visibleDates = calendarUiModel.visibleDates.map {
                                 it.copy(isSelected = it.date.isEqual(date))
                             }
                         )
                     },
                     onPrevClickListener = {
-                        calendarUiModel =
-                            dataSource.getMonthData(
-                                startDate = calendarUiModel.visibleDates.first().date.minusDays(1),
-                                lastSelectedDate = calendarUiModel.selectedDate.date
-                            )
+                        // Subtracting 1 month from the current selected date
+                        val newSelectedDate = calendarUiModel.selectedDate.date.minusMonths(1)
+                        calendarUiModel = dataSource.getMonthData(lastSelectedDate = newSelectedDate)
                     },
                     onNextClickListener = {
-                        calendarUiModel =
-                            dataSource.getMonthData(
-                                startDate = calendarUiModel.visibleDates.last().date.plusDays(1),
-                                lastSelectedDate = calendarUiModel.selectedDate.date
-                            )
+                        // Adding 1 month to the current selected date
+                        val newSelectedDate = calendarUiModel.selectedDate.date.plusMonths(1)
+                        calendarUiModel = dataSource.getMonthData(lastSelectedDate = newSelectedDate)
                     },
                     onResetClickListener = {
-                        calendarUiModel =
-                            dataSource.getMonthData(lastSelectedDate = dataSource.today)
+                        calendarUiModel = dataSource.getMonthData(lastSelectedDate = dataSource.today)
                     }
                 )
+
             }
         }
     }
