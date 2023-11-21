@@ -12,7 +12,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,59 +20,48 @@ import androidx.compose.ui.unit.dp
 import mate.pracainz.calendapp.data.CalendarDataSource
 import mate.pracainz.calendapp.ui.layout.CalendarUiState
 import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
 
 @Composable
 fun CalendarHeader(
     calendarUiState: CalendarUiState,
     dataSource: CalendarDataSource,
-    onPrevClickListener: (LocalDate) -> Unit,
-    onNextClickListener: (LocalDate) -> Unit,
+    onPrevClickListener: () -> Unit,
+    onNextClickListener: () -> Unit,
     onDateClickListener: (LocalDate) -> Unit,
-    onResetClickListener: () -> Unit,
-    onMonthChanged: (String) -> Unit
+    onResetClickListener: () -> Unit
 ) {
     Row {
-        IconButton(onClick = {
-            // invoke previous callback when its button clicked
-            val startDate = calendarUiState.visibleDates.first().date.minusMonths(1)
-            onPrevClickListener(startDate)
-            onMonthChanged(startDate.month.toString())
-        }) {
+        IconButton(onClick = { onPrevClickListener() }) {
             Icon(
                 imageVector = Icons.Filled.KeyboardArrowLeft,
                 contentDescription = "Previous month"
             )
         }
+
         Text(
-            text = calendarUiState.selectedDate.date.month.toString(),
+            text = calendarUiState.selectedDate.date.month.getDisplayName(
+                TextStyle.FULL_STANDALONE,
+                Locale.getDefault()
+            ),
             modifier = Modifier
                 .weight(1f)
-                .align(Alignment.CenterVertically),
-            style = MaterialTheme.typography.bodySmall,
-            onTextLayout = {
-                // Trigger a recomposition when the text layout is calculated
-                onDateClickListener(calendarUiState.selectedDate.date)
-            }
+                .align(Alignment.CenterVertically)
         )
-        IconButton(onClick = {
-            val endDate = calendarUiState.visibleDates.last().date.plusMonths(1)
-            onNextClickListener(endDate)
-            onMonthChanged(endDate.month.toString())
-        }) {
+        IconButton(onClick = { onNextClickListener() }) {
             Icon(
                 imageVector = Icons.Filled.KeyboardArrowRight,
                 contentDescription = "Next month"
             )
         }
-        IconButton(onClick = {
-            onResetClickListener()
-            onMonthChanged(dataSource.today.month.toString())
-        }) {
+        IconButton(onClick = onResetClickListener) {
             Icon(
                 imageVector = Icons.Default.Refresh,
                 contentDescription = "Reset to current date"
             )
         }
+
     }
     Spacer(modifier = Modifier.height(8.dp))
     LazyRow(

@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
@@ -16,6 +13,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,7 +25,9 @@ import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,15 +39,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import mate.pracainz.calendapp.data.CalendarDataSource
-import mate.pracainz.calendapp.ui.components.CalendarHeader
-import mate.pracainz.calendapp.ui.components.CalendarItem
+import mate.pracainz.calendapp.ui.components.CalendarContent
 import mate.pracainz.calendapp.ui.components.MenuItem
-import mate.pracainz.calendapp.ui.layout.CalendarUiState
-import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendAppContent() {
+fun CalendApp() {
     val dataSource = CalendarDataSource()
     var calendarUiModel by remember {
         mutableStateOf(
@@ -161,87 +158,44 @@ fun CalendAppContent() {
                         calendarUiModel = calendarUiModel.copy(
                             selectedDate = calendarUiModel.selectedDate,
                             visibleDates = calendarUiModel.visibleDates.map {
-                                it.copy(
-                                    isSelected = it.date.isEqual(date)
-                                )
+                                it.copy(isSelected = it.date.isEqual(date))
                             }
                         )
                     },
-                    onPrevClickListener = { startDate ->
-                        val finalStartDate = startDate.minusDays(1)
+                    onPrevClickListener = {
                         calendarUiModel =
                             dataSource.getMonthData(
-                                startDate = finalStartDate,
+                                startDate = calendarUiModel.visibleDates.first().date.minusDays(1),
                                 lastSelectedDate = calendarUiModel.selectedDate.date
                             )
                     },
-                    onNextClickListener = { endDate ->
-                        val finalStartDate = endDate.plusDays(2)
+                    onNextClickListener = {
                         calendarUiModel =
                             dataSource.getMonthData(
-                                startDate = finalStartDate,
+                                startDate = calendarUiModel.visibleDates.last().date.plusDays(1),
                                 lastSelectedDate = calendarUiModel.selectedDate.date
                             )
                     },
                     onResetClickListener = {
                         calendarUiModel =
                             dataSource.getMonthData(lastSelectedDate = dataSource.today)
-                    },
-                    onMonthChanged = {}
+                    }
                 )
             }
         }
     }
-}
+    val sheetState = rememberModalBottomSheetState()
+    var isSheetOpen by rememberSaveable {
+        mutableStateOf(false)
+    }
+    val scaffoldState = rememberBottomSheetScaffoldState()
+    BottomSheetScaffold(
+        scaffoldState = scaffoldState,
+        sheetContent = {
 
-@Composable
-fun CalendarContent(
-    dataSource: CalendarDataSource,
-    calendarUiState: CalendarUiState,
-    onDateClickListener: (LocalDate) -> Unit,
-    onPrevClickListener: (LocalDate) -> Unit,
-    onNextClickListener: (LocalDate) -> Unit,
-    onResetClickListener: () -> Unit,
-    onMonthChanged: (String) -> Unit
+        },
+        sheetPeekHeight = 0.dp
+    ) {
 
-) {
-    LazyColumn {
-        item {
-            CalendarHeader(
-                dataSource = dataSource,
-                calendarUiState = calendarUiState,
-                onPrevClickListener = {startDate -> onPrevClickListener(startDate)},
-                onNextClickListener = {endDate -> onNextClickListener(endDate)},
-                onDateClickListener = onDateClickListener,
-                onResetClickListener = onResetClickListener,
-                onMonthChanged = onMonthChanged
-            )
-        }
-        val datesByWeeks = calendarUiState.visibleDates.chunked(7)
-
-        datesByWeeks.forEachIndexed { _, weekDates ->
-            item {
-                LazyRow {
-                    items(weekDates) { date ->
-                        CalendarItem(
-                            date = date,
-                            onClickListener = {clickedDate ->
-                                onDateClickListener(clickedDate)
-                                // Determine if the clicked date is from the next/previous month
-                                if (clickedDate.month != calendarUiState.selectedDate.date.month) {
-                                    // Check if it's from the next month
-                                    if (clickedDate.isAfter(calendarUiState.selectedDate.date)) {
-                                        onNextClickListener(clickedDate)
-                                    } else {
-                                        // It's from the previous month
-                                        onPrevClickListener(clickedDate)
-                                    }
-                                }},
-                            isCurrentMonth = date.date.month == calendarUiState.selectedDate.date.month
-                        )
-                    }
-                }
-            }
-        }
     }
 }

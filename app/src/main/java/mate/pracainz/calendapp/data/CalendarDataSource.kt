@@ -77,7 +77,7 @@ class CalendarDataSource {
         lastSelectedDate: LocalDate
     ): CalendarUiState {
         return CalendarUiState(
-            selectedDate = toItemUiModel(lastSelectedDate, true),
+            selectedDate = toItemUiModel(today, true),
             visibleDates = dateList.map {
                 toItemUiModel(it, it.isEqual(lastSelectedDate))
             },

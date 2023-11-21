@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter
 
 data class CalendarUiState(
     var selectedDate: Date,
-    var visibleDates: List<Date>
+    var visibleDates: List<Date>,
 ) {
     val startDate: Date get() = visibleDates.first()
     val endDate: Date get() = visibleDates.last()
@@ -13,7 +13,7 @@ data class CalendarUiState(
     data class Date(
         val date: LocalDate,
         val isSelected: Boolean,
-        val isToday: Boolean
+        val isToday: Boolean,
     ) : Comparable<Date> {
         val day: String = date.format(DateTimeFormatter.ofPattern("E"))
 
@@ -22,4 +22,3 @@ data class CalendarUiState(
         }
     }
 }
-

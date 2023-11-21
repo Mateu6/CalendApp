@@ -1,6 +1,7 @@
 package mate.pracainz.calendapp.ui.components
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,18 +16,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import mate.pracainz.calendapp.ui.layout.CalendarUiState
+import java.time.LocalDate
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CalendarItem(
     date: CalendarUiState.Date,
-    onClickListener: (java.time.LocalDate) -> Unit, // still, callback should be registered from outside
+    onClickListener: (LocalDate) -> Unit, // still, callback should be registered from outside
     isCurrentMonth: Boolean
 ) {
+
     Card(
         modifier = Modifier
             .padding(vertical = 4.dp, horizontal = 4.dp)
             .alpha(if (isCurrentMonth) 1f else 0.5f)
-            .clickable { onClickListener(date.date) },
+            .combinedClickable(
+                onClick = { onClickListener(date.date) }
+            ),
         colors = CardDefaults.cardColors(
             containerColor = if (date.isSelected) {
                 MaterialTheme.colorScheme.primary
