@@ -31,29 +31,27 @@ fun CalendarContent(
 
         val datesByWeeks = calendarUiState.visibleDates.chunked(7)
 
-        datesByWeeks.forEachIndexed { _, weekDates ->
-            item {
-                LazyRow {
-                    items(weekDates) { date ->
-                        CalendarItem(
-                            date = date,
-                            onClickListener = { clickedDate ->
-                                onDateClickListener(clickedDate)
-                                // Determine if the clicked date is from the next/previous month
-                                if (clickedDate.month != calendarUiState.selectedDate.date.month) {
-                                    // Check if it's from the next month
-                                    if (clickedDate.isAfter(calendarUiState.selectedDate.date)) {
-                                        onNextClickListener()
-                                    } else {
-                                        // It's from the previous month
-                                        onPrevClickListener()
+        datesByWeeks.forEachIndexed { index, weekDates ->
+            // Skip the first row
+            if (index > 0) {
+                item {
+                    LazyRow {
+                        items(weekDates) { date ->
+                            CalendarItem(
+                                date = date,
+                                onClickListener = { clickedDate ->
+                                    onDateClickListener(clickedDate)
+                                    if (clickedDate.month != calendarUiState.selectedDate.date.month) {
+                                        if (clickedDate.isAfter(calendarUiState.selectedDate.date)) {
+                                            onNextClickListener()
+                                        } else {
+                                            onPrevClickListener()
+                                        }
                                     }
-                                }},
-                            //onLongClickListener = {
-                                //EventEditor(isSheetOpen = true)
-                            //},
-                            isCurrentMonth = date.date.month.equals(calendarUiState.selectedDate.date.month)
-                        )
+                                },
+                                isCurrentMonth = date.date.month.equals(calendarUiState.selectedDate.date.month)
+                            )
+                        }
                     }
                 }
             }
