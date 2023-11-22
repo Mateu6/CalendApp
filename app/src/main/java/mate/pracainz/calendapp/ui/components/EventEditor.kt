@@ -1,40 +1,77 @@
 package mate.pracainz.calendapp.ui.components
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import java.time.LocalDate
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventEditor(
-    onDismiss: Boolean,
-    ){
+    onAddEvent: (EventItem) -> Unit
+) {
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by rememberSaveable {
         mutableStateOf(false)
     }
-    if(isSheetOpen) {
-        ModalBottomSheet(
-            sheetState = sheetState,
-            onDismissRequest = {
-                isSheetOpen = false
-            }
+
+    var title by remember {
+        mutableStateOf("")
+    }
+    var description by remember {
+        mutableStateOf("")
+    }
+    val selectedDate by remember { mutableStateOf(LocalDate.now()) }
+
+    ModalBottomSheet(
+        sheetState = sheetState,
+        onDismissRequest = {isSheetOpen = false},
+    ){
+        Text(
+            //if (EventList = empty){}
+            text = "Events",
+            style = MaterialTheme.typography.bodyLarge
+        )
+        OutlinedTextField(
+            value = title,
+            onValueChange = { title = it }
+        )
+        OutlinedTextField(
+            value = description,
+            onValueChange = { description = it }
+        )
+        FloatingActionButton(
+            onClick = {
+                val newEvent = EventItem(
+                    id = UUID.randomUUID().toString(),
+                    title = title,
+                    description = description,
+                    date = selectedDate,
+                    eventType = "Default",
+                    typeIcon = Icons.Default.Info,
+                    isToday = selectedDate == LocalDate.now()
+                )
+                onAddEvent(newEvent)
+            },
+            modifier = Modifier.padding(16.dp)
         ) {
-            Text(
-                text = "Event Editor",
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
-                style = MaterialTheme.typography.bodyMedium
-            )
+
         }
     }
 }

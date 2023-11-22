@@ -13,7 +13,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -25,9 +24,7 @@ import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import mate.pracainz.calendapp.data.CalendarDataSource
 import mate.pracainz.calendapp.ui.components.CalendarContent
+import mate.pracainz.calendapp.ui.components.EventList
 import mate.pracainz.calendapp.ui.components.MenuItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,8 +51,15 @@ fun CalendApp() {
             )
         )
     }
+    val eventList by remember {
+        mutableStateOf(
+            calendarUiModel.visibleDates
+                .find { it.date == calendarUiModel.selectedDate.date }
+                ?.events ?: emptyList()
+        )
+    }
 
-    val items = listOf(
+    val menuItems = listOf(
         MenuItem(
             id = "Home",
             title = "Home",
@@ -90,7 +95,7 @@ fun CalendApp() {
         drawerContent = {
             ModalDrawerSheet {
                 Spacer(modifier = Modifier.height(16.dp))
-                items.forEachIndexed { index, item ->
+                menuItems.forEachIndexed { index, item ->
                     NavigationDrawerItem(
                         label = {
                             Text(text = item.title)
@@ -176,22 +181,8 @@ fun CalendApp() {
                         calendarUiModel = dataSource.getMonthData(lastSelectedDate = dataSource.today)
                     }
                 )
-
+                EventList(selectedDate = calendarUiModel.selectedDate, events = eventList)
             }
         }
-    }
-    val sheetState = rememberModalBottomSheetState()
-    var isSheetOpen by rememberSaveable {
-        mutableStateOf(false)
-    }
-    val scaffoldState = rememberBottomSheetScaffoldState()
-    BottomSheetScaffold(
-        scaffoldState = scaffoldState,
-        sheetContent = {
-
-        },
-        sheetPeekHeight = 0.dp
-    ) {
-
     }
 }

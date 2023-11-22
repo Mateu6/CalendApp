@@ -1,5 +1,6 @@
 package mate.pracainz.calendapp.ui.layout
 
+import mate.pracainz.calendapp.ui.components.EventItem
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -14,6 +15,7 @@ data class CalendarUiState(
         val date: LocalDate,
         val isSelected: Boolean,
         val isToday: Boolean,
+        val events: List<EventItem> = emptyList() // Add events property
     ) : Comparable<Date> {
         val day: String = date.format(DateTimeFormatter.ofPattern("E"))
 

@@ -49,6 +49,9 @@ fun CalendarContent(
                                         onPrevClickListener()
                                     }
                                 }},
+                            //onLongClickListener = {
+                                //EventEditor(isSheetOpen = true)
+                            //},
                             isCurrentMonth = date.date.month.equals(calendarUiState.selectedDate.date.month)
                         )
                     }

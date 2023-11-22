@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import mate.pracainz.calendapp.ui.layout.CalendarUiState
 import java.time.LocalDate
@@ -22,7 +24,8 @@ import java.time.LocalDate
 @Composable
 fun CalendarItem(
     date: CalendarUiState.Date,
-    onClickListener: (LocalDate) -> Unit, // still, callback should be registered from outside
+    onClickListener: (LocalDate) -> Unit,
+    //onLongClickListener: () -> Unit,
     isCurrentMonth: Boolean
 ) {
 
@@ -31,7 +34,11 @@ fun CalendarItem(
             .padding(vertical = 4.dp, horizontal = 4.dp)
             .alpha(if (isCurrentMonth) 1f else 0.5f)
             .combinedClickable(
-                onClick = { onClickListener(date.date) }
+                onClick = { onClickListener(date.date) },
+                //onLongClick = { onLongClickListener() },
+            )
+            .clip(
+                shape = CircleShape
             ),
         colors = CardDefaults.cardColors(
             containerColor = if (date.isSelected) {
