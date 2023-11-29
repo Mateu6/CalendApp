@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -18,12 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import mate.pracainz.calendapp.ui.layout.CalendarUiState
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun EventList(
-    selectedDate: CalendarUiState.Date,
-    events: List<EventItem>
+    calendarUiState: CalendarUiState,
+    events: List<EventItem> = generateSampleEvents()
 ){
     Divider(
         modifier = Modifier
@@ -41,7 +44,7 @@ fun EventList(
         ) {
             item {
                 Text(
-                    text = "Events for ${selectedDate.date.format(DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy"))}",
+                    text = "Events for ${calendarUiState.selectedDate.date.format(DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy"))}",
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(8.dp),
                     color = MaterialTheme.colorScheme.primary,
@@ -84,4 +87,37 @@ fun EventListItem(event: EventItem) {
             // Add other event details as needed
         }
     }
+}
+
+// Sample function to generate events for testing
+fun generateSampleEvents(): List<EventItem> {
+    val currentDate = LocalDate.now()
+    return listOf(
+        EventItem(
+            title = "Testing",
+            description = "going well",
+            date = LocalDate.now(),
+            time = LocalDate.now(),
+            eventType = "Sample",
+            typeIcon = Icons.Default.Face,
+            isToday = currentDate == LocalDate.now()
+        ),
+        EventItem(
+            title = "Testing",
+            description = "going well",
+            date = LocalDate.now(),
+            time = LocalDate.now(),
+            eventType = "Sample",
+            typeIcon = Icons.Default.Face,
+            isToday = currentDate == LocalDate.now()
+        ),
+        EventItem(
+            title = "Testing",
+            description = "going well",
+            date = LocalDate.now(),
+            time = LocalDate.now(),
+            eventType = "Sample",
+            typeIcon = Icons.Default.Face,
+            isToday = currentDate == LocalDate.now()
+        ),)
 }

@@ -36,7 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import mate.pracainz.calendapp.data.CalendarDataSource
-import mate.pracainz.calendapp.ui.components.CalendarContent
+import mate.pracainz.calendapp.ui.components.CalendarView
 import mate.pracainz.calendapp.ui.components.EventList
 import mate.pracainz.calendapp.ui.components.MenuItem
 
@@ -156,7 +156,7 @@ fun CalendApp() {
                         top = paddingValues.calculateTopPadding()
                     )
             ) {
-                CalendarContent(
+                CalendarView(
                     dataSource = dataSource,
                     calendarUiState = calendarUiModel,
                     onDateClickListener = { date ->
@@ -179,9 +179,14 @@ fun CalendApp() {
                     },
                     onResetClickListener = {
                         calendarUiModel = dataSource.getMonthData(lastSelectedDate = dataSource.today)
+                    },
+                    onLongPressListener = {
+                        scope.launch {
+
+                        }
                     }
                 )
-                EventList(selectedDate = calendarUiModel.selectedDate, events = eventList)
+                EventList( calendarUiState = calendarUiModel.copy(), events = eventList)
             }
         }
     }

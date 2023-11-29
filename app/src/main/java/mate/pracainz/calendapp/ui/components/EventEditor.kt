@@ -18,14 +18,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import mate.pracainz.calendapp.ui.layout.CalendarUiState
 import java.time.LocalDate
-import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventEditor(
-    onAddEvent: (EventItem) -> Unit
-) {
+    onAddEvent: (EventItem) -> Unit,
+    calendarUiState: CalendarUiState,
+    ) {
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by rememberSaveable {
         mutableStateOf(false)
@@ -37,7 +38,7 @@ fun EventEditor(
     var description by remember {
         mutableStateOf("")
     }
-    val selectedDate by remember { mutableStateOf(LocalDate.now()) }
+    val selectedDate by remember { mutableStateOf(calendarUiState.selectedDate.date) }
 
     ModalBottomSheet(
         sheetState = sheetState,
@@ -59,10 +60,10 @@ fun EventEditor(
         FloatingActionButton(
             onClick = {
                 val newEvent = EventItem(
-                    id = UUID.randomUUID().toString(),
                     title = title,
                     description = description,
                     date = selectedDate,
+                    time = selectedDate,
                     eventType = "Default",
                     typeIcon = Icons.Default.Info,
                     isToday = selectedDate == LocalDate.now()

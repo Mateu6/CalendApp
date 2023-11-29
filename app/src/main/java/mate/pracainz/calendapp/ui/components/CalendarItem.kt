@@ -22,8 +22,8 @@ import java.time.LocalDate
 @Composable
 fun CalendarItem(
     date: CalendarUiState.Date,
-    onClickListener: (LocalDate) -> Unit,
-    //onLongClickListener: () -> Unit,
+    onDateClickListener: (LocalDate) -> Unit,
+    onLongPressListener: () -> Unit,
     isCurrentMonth: Boolean
 ) {
     Card(
@@ -31,16 +31,14 @@ fun CalendarItem(
             .padding(vertical = 2.dp, horizontal = 2.dp)
             .alpha(if (isCurrentMonth) 1f else 0.5f)
             .combinedClickable(
-                onClick = { onClickListener(date.date) },
-                //onLongClick = { onLongClickListener() },
+                onClick = { onDateClickListener(date.date) },
+                onLongClick = { onLongPressListener() },
             ),
         colors = CardDefaults.cardColors(
-            containerColor = if (date.isToday) {
-                MaterialTheme.colorScheme.primary
-            } else if(date.isSelected) {
-                MaterialTheme.colorScheme.tertiary
-            } else {
-                MaterialTheme.colorScheme.secondary
+            containerColor = when {
+                date.isToday -> MaterialTheme.colorScheme.tertiary
+                date.isSelected -> MaterialTheme.colorScheme.primary
+                else -> MaterialTheme.colorScheme.secondary
             }
         ),
     ) {
