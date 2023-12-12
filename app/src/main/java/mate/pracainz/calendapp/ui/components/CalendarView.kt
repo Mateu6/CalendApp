@@ -31,7 +31,7 @@ fun CalendarView(
     dataSource: CalendarDataSource,
     calendarUiState: CalendarUiState,
     onDateClickListener: (LocalDate) -> Unit,
-    onLongPressListener: () -> Unit,
+    onLongPressListener: (LocalDate) -> Unit,
     onPrevClickListener: () -> Unit,
     onNextClickListener: () -> Unit,
     onResetClickListener: () -> Unit,

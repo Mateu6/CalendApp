@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -20,18 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import mate.pracainz.calendapp.ui.layout.CalendarUiState
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun EventList(
     calendarUiState: CalendarUiState,
-    events: List<EventItem> = generateSampleEvents()
-){
-    Divider(
-        modifier = Modifier
-            .padding(top = 8.dp)
-    )
+    events: List<EventItem>
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -40,7 +33,6 @@ fun EventList(
         LazyRow(
             modifier = Modifier
                 .align(alignment = CenterHorizontally),
-            //flingBehavior = {}
         ) {
             item {
                 Text(
@@ -71,6 +63,7 @@ fun EventList(
         }
     }
 }
+
 @Composable
 fun EventListItem(event: EventItem) {
     Card(
@@ -83,41 +76,21 @@ fun EventListItem(event: EventItem) {
                 .padding(16.dp)
         ) {
             Text(text = event.title, style = MaterialTheme.typography.labelSmall)
-            Text(text = event.description, style = MaterialTheme.typography.labelSmall)
-            // Add other event details as needed
+            Text(text = event.description ?: "", style = MaterialTheme.typography.labelSmall)
+
+            // Handle different types of events
+            when (event) {
+                is BasicEvent -> {
+                    // Additional UI elements specific to BasicEvent
+                }
+                is TimerEvent -> {
+                    // Additional UI elements specific to TimerEvent
+                }
+                is ReminderEvent -> {
+                    // Additional UI elements specific to ReminderEvent
+                }
+                // Add more cases as needed for other event types
+            }
         }
     }
-}
-
-// Sample function to generate events for testing
-fun generateSampleEvents(): List<EventItem> {
-    val currentDate = LocalDate.now()
-    return listOf(
-        EventItem(
-            title = "Testing",
-            description = "going well",
-            date = LocalDate.now(),
-            time = LocalDate.now(),
-            eventType = "Sample",
-            typeIcon = Icons.Default.Face,
-            isToday = currentDate == LocalDate.now()
-        ),
-        EventItem(
-            title = "Testing",
-            description = "going well",
-            date = LocalDate.now(),
-            time = LocalDate.now(),
-            eventType = "Sample",
-            typeIcon = Icons.Default.Face,
-            isToday = currentDate == LocalDate.now()
-        ),
-        EventItem(
-            title = "Testing",
-            description = "going well",
-            date = LocalDate.now(),
-            time = LocalDate.now(),
-            eventType = "Sample",
-            typeIcon = Icons.Default.Face,
-            isToday = currentDate == LocalDate.now()
-        ),)
 }

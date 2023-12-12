@@ -1,22 +1,45 @@
 package mate.pracainz.calendapp.ui.components
 
-import androidx.compose.ui.graphics.vector.ImageVector
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
-data class EventItem(
-    val id: String = UUID.randomUUID().toString(),
-    val title: String,
-    val description: String,
-    val date: LocalDate,
-    val time: LocalDate,
-    //val duration: Date,
-    val eventType: String,
-    val typeIcon: ImageVector,
+sealed interface EventItem : Parcelable {
+    val id: String
+    val title: String
+    val description: String?
+    val dateOfExecution: LocalDate
     val isToday: Boolean
-)
-data class EventType(
-    val isEvent: Boolean,
-    val isBirthday: Boolean,
-    val isTimer: Boolean
-)
+}
+
+@Parcelize
+data class BasicEvent(
+    override val id: String = UUID.randomUUID().toString(),
+    override val title: String,
+    override val description: String?,
+    override val dateOfExecution: LocalDate,
+    override val isToday: Boolean
+) : EventItem
+
+@Parcelize
+data class TimerEvent(
+    override val id: String = UUID.randomUUID().toString(),
+    override val title: String,
+    override val description: String?,
+    override val dateOfExecution: LocalDate,
+    val startTime: LocalDateTime,
+    val endTime: LocalDateTime,
+    override val isToday: Boolean
+) : EventItem
+
+@Parcelize
+data class ReminderEvent(
+    override val id: String = UUID.randomUUID().toString(),
+    override val title: String,
+    override val description: String?,
+    override val dateOfExecution: LocalDate,
+    val reminderTime: LocalDateTime,
+    override val isToday: Boolean
+) : EventItem

@@ -23,7 +23,7 @@ import java.time.LocalDate
 fun CalendarItem(
     date: CalendarUiState.Date,
     onDateClickListener: (LocalDate) -> Unit,
-    onLongPressListener: () -> Unit,
+    onLongPressListener: (LocalDate) -> Unit,
     isCurrentMonth: Boolean
 ) {
     Card(
@@ -32,7 +32,7 @@ fun CalendarItem(
             .alpha(if (isCurrentMonth) 1f else 0.5f)
             .combinedClickable(
                 onClick = { onDateClickListener(date.date) },
-                onLongClick = { onLongPressListener() },
+                onLongClick = { onLongPressListener(date.date) },
             ),
         colors = CardDefaults.cardColors(
             containerColor = when {

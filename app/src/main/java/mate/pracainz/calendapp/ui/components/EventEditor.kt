@@ -1,78 +1,143 @@
-package mate.pracainz.calendapp.ui.components
 
+import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import mate.pracainz.calendapp.ui.components.BasicEvent
+import mate.pracainz.calendapp.ui.components.EventItem
+import mate.pracainz.calendapp.ui.components.ReminderEvent
+import mate.pracainz.calendapp.ui.components.TimerEvent
 import mate.pracainz.calendapp.ui.layout.CalendarUiState
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventEditor(
     onAddEvent: (EventItem) -> Unit,
     calendarUiState: CalendarUiState,
+) {
+    // State variables for event details
+    var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+    var selectedEventType by remember { mutableStateOf("Basic") }
+
+    // Column for EventEditor
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
     ) {
-    val sheetState = rememberModalBottomSheetState()
-    var isSheetOpen by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    var title by remember {
-        mutableStateOf("")
-    }
-    var description by remember {
-        mutableStateOf("")
-    }
-    val selectedDate by remember { mutableStateOf(calendarUiState.selectedDate.date) }
-
-    ModalBottomSheet(
-        sheetState = sheetState,
-        onDismissRequest = {isSheetOpen = false},
-    ){
-        Text(
-            //if (EventList = empty){}
-            text = "Events",
-            style = MaterialTheme.typography.bodyLarge
-        )
-        OutlinedTextField(
-            value = title,
-            onValueChange = { title = it }
-        )
-        OutlinedTextField(
-            value = description,
-            onValueChange = { description = it }
-        )
-        FloatingActionButton(
-            onClick = {
-                val newEvent = EventItem(
-                    title = title,
-                    description = description,
-                    date = selectedDate,
-                    time = selectedDate,
-                    eventType = "Default",
-                    typeIcon = Icons.Default.Info,
-                    isToday = selectedDate == LocalDate.now()
-                )
-                onAddEvent(newEvent)
-            },
-            modifier = Modifier.padding(16.dp)
+        // Set of FilterChips for selecting event type
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
         ) {
+            setOf("Basic", "Timer", "Reminder").forEach { eventType ->
+                item {
+                    var isSelected by remember { mutableStateOf(eventType == selectedEventType) }
+                    FilterChip(
+                        selected = isSelected,
+                        onClick = {
+                            isSelected = true
+                            if (isSelected) {
+                                selectedEventType = eventType
+                            }
+                        },
+                        label = { Text(text = eventType) },
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                }
+            }
+        }
 
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Column {
+                // Input fields for new event
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Event Title") }
+                )
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Event Description") }
+                )
+            }
+            val contextForToast = LocalContext.current.applicationContext
+
+            // FloatingActionButton to add the new event
+            FloatingActionButton(
+                onClick = {
+                    val newEvent = when (selectedEventType) {
+                        "Basic" -> BasicEvent(
+                            title = title,
+                            description = description,
+                            dateOfExecution = selectedDate,
+                            isToday = selectedDate == LocalDate.now()
+                        )
+                        "Timer" -> TimerEvent(
+                            title = title,
+                            description = description,
+                            dateOfExecution = selectedDate,
+                            startTime = LocalDateTime.now(), // Provide appropriate values
+                            endTime = LocalDateTime.now().plusHours(1), // Provide appropriate values
+                            isToday = selectedDate == LocalDate.now()
+                        )
+                        "Reminder" -> ReminderEvent(
+                            title = title,
+                            description = description,
+                            dateOfExecution = selectedDate,
+                            reminderTime = LocalDateTime.now().plusMinutes(30), // Provide appropriate values
+                            isToday = selectedDate == LocalDate.now()
+                        )
+                        else -> throw IllegalArgumentException("Unknown event type: $selectedEventType")
+                    }
+
+                    if (newEvent.title.isNotEmpty()) {
+                        onAddEvent(newEvent)
+                        Toast.makeText(contextForToast, "Event added!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
+                        Toast.makeText(contextForToast, "Add title to event!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(alignment = Alignment.BottomEnd),
+                shape = CircleShape
+            ) {
+                Icon(Icons.Filled.Add, "Add Event")
+            }
         }
     }
 }
