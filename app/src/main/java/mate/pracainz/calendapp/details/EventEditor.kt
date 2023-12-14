@@ -1,6 +1,5 @@
 
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,11 +9,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,11 +24,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import mate.pracainz.calendapp.details.BasicEvent
-import mate.pracainz.calendapp.details.EventItem
-import mate.pracainz.calendapp.details.ReminderEvent
-import mate.pracainz.calendapp.details.TimerEvent
-import mate.pracainz.calendapp.calendar.data.CalendarUiState
+import mate.pracainz.calendapp.ui.components.BasicEvent
+import mate.pracainz.calendapp.ui.components.DateTimePicker
+import mate.pracainz.calendapp.ui.components.EventItem
+import mate.pracainz.calendapp.ui.components.ReminderEvent
+import mate.pracainz.calendapp.ui.components.TimerEvent
+import mate.pracainz.calendapp.ui.layout.CalendarUiState
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -46,11 +45,15 @@ fun EventEditor(
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     var selectedEventType by remember { mutableStateOf("Basic") }
 
+    // Additional state for TimerEvent
+    var timerRunning by remember { mutableStateOf(false) }
+    var startTime by remember { mutableStateOf(LocalDateTime.now()) }
+    var endTime by remember { mutableStateOf(LocalDateTime.now()) }
+
     // Column for EventEditor
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Set of FilterChips for selecting event type
         LazyRow(
@@ -62,12 +65,10 @@ fun EventEditor(
                 item {
                     var isSelected by remember { mutableStateOf(eventType == selectedEventType) }
                     FilterChip(
-                        selected = isSelected,
+                        selected = (eventType == selectedEventType),
                         onClick = {
+                            selectedEventType = eventType
                             isSelected = true
-                            if (isSelected) {
-                                selectedEventType = eventType
-                            }
                         },
                         label = { Text(text = eventType) },
                         modifier = Modifier.padding(end = 8.dp)
@@ -92,10 +93,38 @@ fun EventEditor(
                     label = { Text("Event Description") }
                 )
             }
+
+            Column {
+
+                // Additional controls based on selected event type
+                when (selectedEventType) {
+                    "Timer" -> {
+                        DateTimePicker(
+                            selectedDateTime = startTime,
+                            onDateTimeChange = { startTime = it },
+                            label = "Start Time"
+                        )
+                        DateTimePicker(
+                            selectedDateTime = endTime,
+                            onDateTimeChange = { endTime = it },
+                            label = "End Time"
+                        )
+                    }
+
+                    "Reminder" -> {
+                        DateTimePicker(
+                            selectedDateTime = LocalDateTime.now(),
+                            onDateTimeChange = { selectedDate },
+                            label = "Reminder Time"
+                        )
+                    }
+                }
+            }
+
             val contextForToast = LocalContext.current.applicationContext
 
             // FloatingActionButton to add the new event
-            FloatingActionButton(
+            Button(
                 onClick = {
                     val newEvent = when (selectedEventType) {
                         "Basic" -> BasicEvent(
@@ -104,21 +133,24 @@ fun EventEditor(
                             dateOfExecution = selectedDate,
                             isToday = selectedDate == LocalDate.now()
                         )
+
                         "Timer" -> TimerEvent(
                             title = title,
                             description = description,
                             dateOfExecution = selectedDate,
-                            startTime = LocalDateTime.now(), // Provide appropriate values
-                            endTime = LocalDateTime.now().plusHours(1), // Provide appropriate values
+                            startTime = startTime,
+                            endTime = endTime,
                             isToday = selectedDate == LocalDate.now()
                         )
+
                         "Reminder" -> ReminderEvent(
                             title = title,
                             description = description,
                             dateOfExecution = selectedDate,
-                            reminderTime = LocalDateTime.now().plusMinutes(30), // Provide appropriate values
+                            reminderTime = LocalDateTime.now(),
                             isToday = selectedDate == LocalDate.now()
                         )
+
                         else -> throw IllegalArgumentException("Unknown event type: $selectedEventType")
                     }
 

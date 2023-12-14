@@ -1,6 +1,7 @@
-package mate.pracainz.calendapp.details
+package mate.pracainz.calendapp.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,11 +14,17 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
-import mate.pracainz.calendapp.calendar.data.CalendarUiState
+import mate.pracainz.calendapp.data.CalendarDataSource
+import mate.pracainz.calendapp.ui.layout.CalendarUiState
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -25,6 +32,14 @@ fun EventList(
     calendarUiState: CalendarUiState,
     events: List<EventItem>
 ) {
+    val dataSource = CalendarDataSource()
+    var calendarUiModel by remember {
+        mutableStateOf(
+            dataSource.getMonthData(
+                lastSelectedDate = dataSource.today
+            )
+        )
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -36,61 +51,73 @@ fun EventList(
         ) {
             item {
                 Text(
-                    text = "Events for ${calendarUiState.selectedDate.date.format(DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy"))}",
+                    text = "Events for ${
+                        calendarUiState.selectedDate.date.format(
+                            DateTimeFormatter.ofPattern(
+                                "EEEE, d MMMM yyyy"
+                            )
+                        )
+                    }",
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(8.dp),
                     color = MaterialTheme.colorScheme.primary,
                 )
             }
         }
-
-        if (events.isNotEmpty()) {
-            LazyColumn {
-                items(events) { event ->
-                    EventListItem(event = event)
-                    Divider() // Add a divider between events
-                }
-            }
-        } else {
-            Text(
-                text = "No events for this date.",
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier
-                    .align(alignment = CenterHorizontally)
-                    .alpha(0.5f),
-                color = MaterialTheme.colorScheme.secondary
-            )
-        }
-    }
-}
-
-@Composable
-fun EventListItem(event: EventItem) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-    ) {
-        Column(
+        Box(
             modifier = Modifier
-                .padding(16.dp)
+                .fillMaxWidth()
         ) {
-            Text(text = event.title, style = MaterialTheme.typography.labelSmall)
-            Text(text = event.description ?: "", style = MaterialTheme.typography.labelSmall)
-
-            // Handle different types of events
-            when (event) {
-                is BasicEvent -> {
-                    // Additional UI elements specific to BasicEvent
+            if (events.isNotEmpty()) {
+                LazyColumn {
+                    items(events) { event ->
+                        EventListItem(event = event)
+                        Divider() // Add a divider between events
+                    }
                 }
-                is TimerEvent -> {
-                    // Additional UI elements specific to TimerEvent
-                }
-                is ReminderEvent -> {
-                    // Additional UI elements specific to ReminderEvent
-                }
-                // Add more cases as needed for other event types
+            } else {
+                Text(
+                    text = "No events for this date.",
+                    style = MaterialTheme.typography.headlineLarge,
+                    modifier = Modifier
+                        .align(Center)
+                        .alpha(0.5f),
+                    color = MaterialTheme.colorScheme.secondary
+                )
             }
         }
     }
 }
+    @Composable
+    fun EventListItem(event: EventItem) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+            ) {
+                Text(text = event.title, style = MaterialTheme.typography.labelSmall)
+                Text(text = event.description ?: "", style = MaterialTheme.typography.labelSmall)
+
+                // Handle different types of events
+                when (event) {
+                    is BasicEvent -> {
+                        // Additional UI elements specific to BasicEvent
+                    }
+
+                    is TimerEvent -> {
+                        // Additional UI elements specific to TimerEvent
+                    }
+
+                    is ReminderEvent -> {
+                        // Additional UI elements specific to ReminderEvent
+                    }
+                    // Add more cases as needed for other event types
+                    else -> {}
+                }
+            }
+        }
+    }

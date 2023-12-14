@@ -1,4 +1,4 @@
-package mate.pracainz.calendapp.home
+package mate.pracainz.calendapp.ui
 
 import EventEditor
 import androidx.compose.foundation.layout.Column
@@ -38,10 +38,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import mate.pracainz.calendapp.calendar.data.CalendarDataSource
-import mate.pracainz.calendapp.calendar.CalendarView
-import mate.pracainz.calendapp.details.EventList
-import mate.pracainz.calendapp.base.MenuItem
+import mate.pracainz.calendapp.data.CalendarDataSource
+import mate.pracainz.calendapp.ui.components.CalendarView
+import mate.pracainz.calendapp.ui.components.EventList
+import mate.pracainz.calendapp.ui.components.MenuItem
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -163,50 +164,13 @@ fun CalendApp() {
                     )
             ) {
                 CalendarView(
-                    dataSource = dataSource,
-                    calendarUiState = calendarUiModel,
-                    onDateClickListener = { date ->
-                        calendarUiModel = calendarUiModel.copy(
-                            selectedDate = dataSource.toItemUiModel(date, true),
-                            visibleDates = calendarUiModel.visibleDates.map {
-                                it.copy(isSelected = it.date.isEqual(date))
-                            }
-                        )
-                        scope.launch {
-                            selectedTabIndex = 0
-                        }
-                    },
-                    onLongPressListener = {date ->
-                        calendarUiModel = calendarUiModel.copy(
-                            selectedDate = dataSource.toItemUiModel(date, true),
-                            visibleDates = calendarUiModel.visibleDates.map {
-                                it.copy(isSelected = it.date.isEqual(date))
-                            }
-                        )
-                        scope.launch {
-                            selectedTabIndex = 1
-                        }
-                    },
-                    onPrevClickListener = {
-                        // Subtracting 1 month from the current selected date
-                        val newSelectedDate = calendarUiModel.selectedDate.date.minusMonths(1)
-                        calendarUiModel =
-                            dataSource.getMonthData(lastSelectedDate = newSelectedDate)
-                    },
-                    onNextClickListener = {
-                        // Adding 1 month to the current selected date
-                        val newSelectedDate = calendarUiModel.selectedDate.date.plusMonths(1)
-                        calendarUiModel =
-                            dataSource.getMonthData(lastSelectedDate = newSelectedDate)
-                    },
-                    onResetClickListener = {
-                        calendarUiModel =
-                            dataSource.getMonthData(lastSelectedDate = dataSource.today)
-                    }
+                    selectedDateTime = LocalDateTime.now(),
                 )
                 Divider(
                     modifier = Modifier
-                        .padding(top = 8.dp)
+                        .padding(start = 16.dp)
+                        .padding(end = 16.dp)
+                        .padding(bottom = 16.dp)
                 )
 
                 when (selectedTabIndex) {
