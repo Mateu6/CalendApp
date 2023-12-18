@@ -1,4 +1,4 @@
-package mate.pracainz.calendapp.ui.components
+package mate.pracainz.calendapp.calendar
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,8 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import mate.pracainz.calendapp.data.CalendarDataSource
-import mate.pracainz.calendapp.ui.layout.CalendarUiState
+import mate.pracainz.calendapp.calendar.data.CalendarDataSource
+import mate.pracainz.calendapp.calendar.data.CalendarUiState
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale

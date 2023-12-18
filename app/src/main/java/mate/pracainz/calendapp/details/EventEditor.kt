@@ -26,11 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import mate.pracainz.calendapp.ui.components.BasicEvent
-import mate.pracainz.calendapp.ui.components.EventItem
-import mate.pracainz.calendapp.ui.components.ReminderEvent
-import mate.pracainz.calendapp.ui.components.TimerEvent
-import mate.pracainz.calendapp.ui.layout.CalendarUiState
+import mate.pracainz.calendapp.details.BasicEvent
+import mate.pracainz.calendapp.details.EventItem
+import mate.pracainz.calendapp.details.ReminderEvent
+import mate.pracainz.calendapp.details.TimerEvent
+import mate.pracainz.calendapp.calendar.data.CalendarUiState
 import java.time.LocalDate
 import java.time.LocalDateTime
 

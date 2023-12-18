@@ -1,4 +1,4 @@
-package mate.pracainz.calendapp.ui.components
+package mate.pracainz.calendapp.base
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

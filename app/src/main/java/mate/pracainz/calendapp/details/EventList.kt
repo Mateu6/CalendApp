@@ -1,4 +1,4 @@
-package mate.pracainz.calendapp.ui.components
+package mate.pracainz.calendapp.details
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -17,7 +17,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
-import mate.pracainz.calendapp.ui.layout.CalendarUiState
+import mate.pracainz.calendapp.calendar.data.CalendarUiState
 import java.time.format.DateTimeFormatter
 
 @Composable
