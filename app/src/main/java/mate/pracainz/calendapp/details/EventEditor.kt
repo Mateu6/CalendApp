@@ -1,3 +1,4 @@
+package mate.pracainz.calendapp.details
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -26,10 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import mate.pracainz.calendapp.details.BasicEvent
-import mate.pracainz.calendapp.details.EventItem
-import mate.pracainz.calendapp.details.ReminderEvent
-import mate.pracainz.calendapp.details.TimerEvent
 import mate.pracainz.calendapp.calendar.data.CalendarUiState
 import java.time.LocalDate
 import java.time.LocalDateTime

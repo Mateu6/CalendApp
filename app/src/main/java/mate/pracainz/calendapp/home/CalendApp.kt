@@ -1,6 +1,5 @@
 package mate.pracainz.calendapp.home
 
-import EventEditor
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,10 +37,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import mate.pracainz.calendapp.calendar.data.CalendarDataSource
-import mate.pracainz.calendapp.calendar.CalendarView
-import mate.pracainz.calendapp.details.EventList
 import mate.pracainz.calendapp.base.MenuItem
+import mate.pracainz.calendapp.calendar.CalendarView
+import mate.pracainz.calendapp.calendar.data.CalendarDataSource
+import mate.pracainz.calendapp.details.EventEditor
+import mate.pracainz.calendapp.details.EventList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
