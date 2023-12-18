@@ -10,7 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import mate.pracainz.calendapp.ui.theme.CalendAppTheme
+import mate.pracainz.calendapp.ui.CalendAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
-                mate.pracainz.calendapp.ui.CalendApp()
+                mate.pracainz.calendapp.home.CalendApp()
             }
         }
     }

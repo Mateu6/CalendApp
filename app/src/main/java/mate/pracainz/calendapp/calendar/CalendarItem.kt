@@ -1,4 +1,4 @@
-package mate.pracainz.calendapp.ui.components
+package mate.pracainz.calendapp.calendar
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
-import mate.pracainz.calendapp.ui.layout.CalendarUiState
+import mate.pracainz.calendapp.calendar.data.CalendarUiState
 import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)

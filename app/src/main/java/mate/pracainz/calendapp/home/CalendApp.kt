@@ -1,4 +1,4 @@
-package mate.pracainz.calendapp.ui
+package mate.pracainz.calendapp.home
 
 import EventEditor
 import androidx.compose.foundation.layout.Column
@@ -38,10 +38,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import mate.pracainz.calendapp.data.CalendarDataSource
-import mate.pracainz.calendapp.ui.components.CalendarView
-import mate.pracainz.calendapp.ui.components.EventList
-import mate.pracainz.calendapp.ui.components.MenuItem
+import mate.pracainz.calendapp.calendar.data.CalendarDataSource
+import mate.pracainz.calendapp.calendar.CalendarView
+import mate.pracainz.calendapp.details.EventList
+import mate.pracainz.calendapp.base.MenuItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

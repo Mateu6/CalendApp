@@ -1,6 +1,5 @@
-package mate.pracainz.calendapp.data
+package mate.pracainz.calendapp.calendar.data
 
-import mate.pracainz.calendapp.ui.layout.CalendarUiState
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit

@@ -1,6 +1,6 @@
-package mate.pracainz.calendapp.ui.layout
+package mate.pracainz.calendapp.calendar.data
 
-import mate.pracainz.calendapp.ui.components.EventItem
+import mate.pracainz.calendapp.details.EventItem
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
