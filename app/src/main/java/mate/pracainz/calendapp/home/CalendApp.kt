@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import mate.pracainz.calendapp.base.MenuItem
 import mate.pracainz.calendapp.calendar.CalendarView
-import mate.pracainz.calendapp.calendar.CalendarViewModel
 import mate.pracainz.calendapp.calendar.model.CalendarDataSource
+import mate.pracainz.calendapp.calendar.model.CalendarViewModel
 import mate.pracainz.calendapp.details.EventEditor
 import mate.pracainz.calendapp.details.EventEditorViewModel
 import mate.pracainz.calendapp.details.EventList

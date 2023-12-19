@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import mate.pracainz.calendapp.calendar.model.CalendarUiState
+import mate.pracainz.calendapp.calendar.model.CalendarViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

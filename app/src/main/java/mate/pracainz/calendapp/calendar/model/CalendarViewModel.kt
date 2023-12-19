@@ -1,12 +1,10 @@
-package mate.pracainz.calendapp.calendar
+package mate.pracainz.calendapp.calendar.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import mate.pracainz.calendapp.calendar.model.CalendarDataSource
-import mate.pracainz.calendapp.calendar.model.CalendarUiState
 import java.time.LocalDate
 
 class CalendarViewModel(private val dataSource: CalendarDataSource) : ViewModel() {
@@ -64,7 +62,7 @@ class CalendarViewModel(private val dataSource: CalendarDataSource) : ViewModel(
     private fun updateVisibleDates(startDate: LocalDate) {
         viewModelScope.launch {
             _calendarUiState.value = dataSource.getMonthData(
-                lastSelectedDate = _calendarUiState.value.selectedDate.date
+                lastSelectedDate = startDate
             )
         }
     }

@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import mate.pracainz.calendapp.calendar.model.CalendarViewModel
 import java.time.format.TextStyle
 import java.util.Locale
 
