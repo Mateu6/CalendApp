@@ -19,6 +19,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,21 +29,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import mate.pracainz.calendapp.calendar.data.CalendarUiState
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventEditor(
-    onAddEvent: (EventItem) -> Unit,
-    calendarUiState: CalendarUiState,
-) {
+fun EventEditor(viewModel: EventEditorViewModel) {
     // State variables for event details
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-    var selectedEventType by remember { mutableStateOf("Basic") }
+
+    // Additional state for TimerEvent
+    var timerRunning by remember { mutableStateOf(false) }
+
+    // Accessing the selectedEventType from the view model
+    val selectedEventType by viewModel.selectedEventType.collectAsState()
+
+    // Fetch the selectedTabIndex from the view model
+    val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()
+
+    // LaunchedEffect to observe changes in selectedTabIndex and update selectedEventType
+    LaunchedEffect(selectedTabIndex) {
+        viewModel.onSelectedTabIndexChange(selectedTabIndex)
+    }
 
     // Column for EventEditor
     Column(
@@ -59,12 +68,10 @@ fun EventEditor(
                 item {
                     var isSelected by remember { mutableStateOf(eventType == selectedEventType) }
                     FilterChip(
-                        selected = isSelected,
+                        selected = (eventType == selectedEventType),
                         onClick = {
+                            viewModel.onSelectedEventTypeChange(eventType)
                             isSelected = true
-                            if (isSelected) {
-                                selectedEventType = eventType
-                            }
                         },
                         label = { Text(text = eventType) },
                         modifier = Modifier.padding(end = 8.dp)
@@ -89,6 +96,29 @@ fun EventEditor(
                     label = { Text("Event Description") }
                 )
             }
+
+            Column {
+                // Additional controls based on selected event type
+                when (val selectedEventType = viewModel.selectedEventType.collectAsState().value) {
+                    "Timer" -> {
+                        // Use calendar data to determine start and end time for TimerEvent
+                        val startDate = viewModel.calendarUiState.collectAsState().value.startDate.date
+                        val endDate = viewModel.calendarUiState.collectAsState().value.endDate.date
+                        val startTime = startDate?.atStartOfDay()
+                        val endTime = endDate?.atTime(23, 59, 59)
+                        Text("Start Time: $startTime")
+                        Text("End Time: $endTime")
+                    }
+
+                    "Reminder" -> {
+                        // Use calendar data to determine reminder time for ReminderEvent
+                        val selectedDate = viewModel.selectedDate.collectAsState().value
+                        val reminderTime = selectedDate.atTime(9, 0) // Replace with actual reminder time
+                        Text("Reminder Time: $reminderTime")
+                    }
+                }
+            }
+
             val contextForToast = LocalContext.current.applicationContext
 
             // FloatingActionButton to add the new event
@@ -98,29 +128,41 @@ fun EventEditor(
                         "Basic" -> BasicEvent(
                             title = title,
                             description = description,
-                            dateOfExecution = selectedDate,
-                            isToday = selectedDate == LocalDate.now()
+                            dateOfExecution = viewModel.selectedDate.value,
+                            isToday = viewModel.selectedDate.value == LocalDate.now()
                         )
-                        "Timer" -> TimerEvent(
-                            title = title,
-                            description = description,
-                            dateOfExecution = selectedDate,
-                            startTime = LocalDateTime.now(), // Provide appropriate values
-                            endTime = LocalDateTime.now().plusHours(1), // Provide appropriate values
-                            isToday = selectedDate == LocalDate.now()
-                        )
-                        "Reminder" -> ReminderEvent(
-                            title = title,
-                            description = description,
-                            dateOfExecution = selectedDate,
-                            reminderTime = LocalDateTime.now().plusMinutes(30), // Provide appropriate values
-                            isToday = selectedDate == LocalDate.now()
-                        )
+
+                        "Timer" -> {
+                            // Use calendar data to determine start and end time for TimerEvent
+                            val startTime = viewModel.calendarUiState.value.startDate.date.atStartOfDay()
+                            val endTime = viewModel.calendarUiState.value.endDate.date.atTime(23, 59, 59)
+                            TimerEvent(
+                                title = title,
+                                description = description,
+                                dateOfExecution = viewModel.selectedDate.value,
+                                startTime = startTime, // Replace with actual start time
+                                endTime = endTime, // Replace with actual end time
+                                isToday = viewModel.selectedDate.value == LocalDate.now()
+                            )
+                        }
+
+                        "Reminder" -> {
+                            // Use calendar data to determine reminder time for ReminderEvent
+                            val reminderTime = viewModel.selectedDate.value.atTime(9, 0) // Replace with actual reminder time
+                            ReminderEvent(
+                                title = title,
+                                description = description,
+                                dateOfExecution = viewModel.selectedDate.value,
+                                reminderTime = reminderTime, // Replace with actual reminder time
+                                isToday = viewModel.selectedDate.value == LocalDate.now()
+                            )
+                        }
+
                         else -> throw IllegalArgumentException("Unknown event type: $selectedEventType")
                     }
 
                     if (newEvent.title.isNotEmpty()) {
-                        onAddEvent(newEvent)
+                        viewModel.onAddEvent(newEvent)
                         Toast.makeText(contextForToast, "Event added!", Toast.LENGTH_SHORT)
                             .show()
                     } else {

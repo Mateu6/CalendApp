@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
-import mate.pracainz.calendapp.calendar.data.CalendarUiState
+import mate.pracainz.calendapp.calendar.model.CalendarUiState
 import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)

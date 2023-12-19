@@ -27,10 +27,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -39,28 +39,17 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import mate.pracainz.calendapp.base.MenuItem
 import mate.pracainz.calendapp.calendar.CalendarView
-import mate.pracainz.calendapp.calendar.data.CalendarDataSource
+import mate.pracainz.calendapp.calendar.CalendarViewModel
+import mate.pracainz.calendapp.calendar.model.CalendarDataSource
 import mate.pracainz.calendapp.details.EventEditor
+import mate.pracainz.calendapp.details.EventEditorViewModel
 import mate.pracainz.calendapp.details.EventList
+import mate.pracainz.calendapp.details.EventListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendApp() {
-    val dataSource = CalendarDataSource()
-    var calendarUiModel by remember {
-        mutableStateOf(
-            dataSource.getMonthData(
-                lastSelectedDate = dataSource.today
-            )
-        )
-    }
-    val eventList by remember {
-        mutableStateOf(
-            calendarUiModel.visibleDates
-                .find { it.date == calendarUiModel.selectedDate.date }
-                ?.events ?: emptyList()
-        )
-    }
+fun CalendApp(calendarViewModel: CalendarViewModel) {
+    CalendarDataSource()
 
     val menuItems = listOf(
         MenuItem(
@@ -163,45 +152,23 @@ fun CalendApp() {
                     )
             ) {
                 CalendarView(
-                    dataSource = dataSource,
-                    calendarUiState = calendarUiModel,
+                    viewModel = calendarViewModel,
                     onDateClickListener = { date ->
-                        calendarUiModel = calendarUiModel.copy(
-                            selectedDate = dataSource.toItemUiModel(date, true),
-                            visibleDates = calendarUiModel.visibleDates.map {
-                                it.copy(isSelected = it.date.isEqual(date))
-                            }
-                        )
-                        scope.launch {
-                            selectedTabIndex = 0
-                        }
+                        calendarViewModel.onDateClicked(date)
+                        selectedTabIndex = 0
                     },
-                    onLongPressListener = {date ->
-                        calendarUiModel = calendarUiModel.copy(
-                            selectedDate = dataSource.toItemUiModel(date, true),
-                            visibleDates = calendarUiModel.visibleDates.map {
-                                it.copy(isSelected = it.date.isEqual(date))
-                            }
-                        )
-                        scope.launch {
-                            selectedTabIndex = 1
-                        }
+                    onLongPressListener = { date ->
+                        calendarViewModel.onLongPress(date)
+                        selectedTabIndex = 1
                     },
                     onPrevClickListener = {
-                        // Subtracting 1 month from the current selected date
-                        val newSelectedDate = calendarUiModel.selectedDate.date.minusMonths(1)
-                        calendarUiModel =
-                            dataSource.getMonthData(lastSelectedDate = newSelectedDate)
+                        calendarViewModel.onPrevClick()
                     },
                     onNextClickListener = {
-                        // Adding 1 month to the current selected date
-                        val newSelectedDate = calendarUiModel.selectedDate.date.plusMonths(1)
-                        calendarUiModel =
-                            dataSource.getMonthData(lastSelectedDate = newSelectedDate)
+                        calendarViewModel.onNextClick()
                     },
                     onResetClickListener = {
-                        calendarUiModel =
-                            dataSource.getMonthData(lastSelectedDate = dataSource.today)
+                        calendarViewModel.onResetClick()
                     }
                 )
                 Divider(
@@ -212,17 +179,14 @@ fun CalendApp() {
                 when (selectedTabIndex) {
                     0 -> {
                         EventList(
-                            calendarUiState = calendarUiModel.copy(),
-                            events = eventList
+                            calendarUiState = calendarViewModel.calendarUiState.collectAsState().value.copy(),
+                            viewModel = EventListViewModel()
                         )
                     }
 
                     1 -> {
                         EventEditor(
-                            onAddEvent = { event ->
-                                println("Added event: $event") // Replace with DB and UI logic
-                            },
-                            calendarUiState = calendarUiModel
+                            viewModel = EventEditorViewModel()
                         )
                     }
                 }

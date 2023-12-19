@@ -1,6 +1,7 @@
 package mate.pracainz.calendapp.details
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,13 +18,13 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
-import mate.pracainz.calendapp.calendar.data.CalendarUiState
+import mate.pracainz.calendapp.calendar.model.CalendarUiState
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun EventList(
-    calendarUiState: CalendarUiState,
-    events: List<EventItem>
+    viewModel: EventListViewModel,
+    calendarUiState: CalendarUiState
 ) {
     Column(
         modifier = Modifier
@@ -44,10 +45,10 @@ fun EventList(
             }
         }
 
-        if (events.isNotEmpty()) {
+        if (viewModel.events.isNotEmpty()) {
             LazyColumn {
-                items(events) { event ->
-                    EventListItem(event = event)
+                items(viewModel.events) { event ->
+                    EventListItem(event = event, onClick = { viewModel.handleEventClick(event) })
                     Divider() // Add a divider between events
                 }
             }
@@ -65,11 +66,12 @@ fun EventList(
 }
 
 @Composable
-fun EventListItem(event: EventItem) {
+fun EventListItem(event: EventItem, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
+            .clickable { onClick() } // Add a clickable modifier
     ) {
         Column(
             modifier = Modifier
@@ -77,20 +79,6 @@ fun EventListItem(event: EventItem) {
         ) {
             Text(text = event.title, style = MaterialTheme.typography.labelSmall)
             Text(text = event.description ?: "", style = MaterialTheme.typography.labelSmall)
-
-            // Handle different types of events
-            when (event) {
-                is BasicEvent -> {
-                    // Additional UI elements specific to BasicEvent
-                }
-                is TimerEvent -> {
-                    // Additional UI elements specific to TimerEvent
-                }
-                is ReminderEvent -> {
-                    // Additional UI elements specific to ReminderEvent
-                }
-                // Add more cases as needed for other event types
-            }
         }
     }
 }

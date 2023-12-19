@@ -17,25 +17,26 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import mate.pracainz.calendapp.calendar.data.CalendarDataSource
-import mate.pracainz.calendapp.calendar.data.CalendarUiState
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
 fun CalendarView(
-    dataSource: CalendarDataSource,
-    calendarUiState: CalendarUiState,
+    viewModel: CalendarViewModel, // Pass the CalendarViewModel instance
     onDateClickListener: (LocalDate) -> Unit,
     onLongPressListener: (LocalDate) -> Unit,
     onPrevClickListener: () -> Unit,
     onNextClickListener: () -> Unit,
     onResetClickListener: () -> Unit,
 ) {
+    val calendarUiState by viewModel.calendarUiState.collectAsState()
+
     Column {
         // Header
         Row(
@@ -76,7 +77,6 @@ fun CalendarView(
                 )
             }
         }
-
 
         Spacer(modifier = Modifier.height(8.dp))
 

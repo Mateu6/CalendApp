@@ -1,4 +1,4 @@
-package mate.pracainz.calendapp.calendar.data
+package mate.pracainz.calendapp.calendar.model
 
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -16,23 +16,19 @@ class CalendarDataSource {
         startDate: LocalDate = today,
         lastSelectedDate: LocalDate
     ): CalendarUiState {
-        val firstDayOfWeek = startDate.with(DayOfWeek.MONDAY)
-        val endDayOfWeek = firstDayOfWeek.plusDays(7)
+        val firstDayOfWeek = startDate.toStartOfWeek()
+        val endDayOfWeek = startDate.toEndOfWeek()
         val visibleDatesWeek = getDatesBetween(firstDayOfWeek, endDayOfWeek)
 
         return toUiModel(visibleDatesWeek, lastSelectedDate)
     }
 
     fun getMonthData(
-        startDate: LocalDate = today,
         lastSelectedDate: LocalDate
     ): CalendarUiState {
-        // Calculate the start and end dates of the month containing lastSelectedDate
-        val firstDayOfMonthContainingSelection = lastSelectedDate.withDayOfMonth(1)
-        val lastDayOfMonthContainingSelection =
-            lastSelectedDate.withDayOfMonth(lastSelectedDate.lengthOfMonth())
+        val firstDayOfMonthContainingSelection = lastSelectedDate.toStartOfMonth()
+        val lastDayOfMonthContainingSelection = lastSelectedDate.toEndOfMonth()
 
-        // Calculate the visible dates for the month containing lastSelectedDate
         val visibleDatesMonth = getDatesBetween(
             findFirstMonday(firstDayOfMonthContainingSelection),
             findLastSunday(lastDayOfMonthContainingSelection)
@@ -40,7 +36,6 @@ class CalendarDataSource {
 
         return toUiModel(visibleDatesMonth, lastSelectedDate)
     }
-
 
     private fun findFirstMonday(
         date: LocalDate
