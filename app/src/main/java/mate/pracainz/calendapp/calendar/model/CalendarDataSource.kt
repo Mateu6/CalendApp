@@ -7,7 +7,7 @@ import java.util.stream.Collectors
 import java.util.stream.Stream
 
 class CalendarDataSource {
-    val today: LocalDate
+    private val today: LocalDate
         get() {
             return LocalDate.now()
         }

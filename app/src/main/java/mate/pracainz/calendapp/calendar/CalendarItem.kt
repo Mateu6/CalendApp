@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import mate.pracainz.calendapp.calendar.model.CalendarUiState
 import mate.pracainz.calendapp.calendar.model.CalendarViewModel
@@ -35,11 +36,11 @@ fun CalendarItem(
             ),
         colors = CardDefaults.cardColors(
             containerColor = when {
-                date.isToday -> MaterialTheme.colorScheme.tertiary
-                date.isSelected -> MaterialTheme.colorScheme.primary
-                else -> MaterialTheme.colorScheme.secondary
+                date.isToday -> MaterialTheme.colorScheme.primaryContainer
+                date.isSelected -> MaterialTheme.colorScheme.outline
+                else -> MaterialTheme.colorScheme.background
             }
-        ),
+        )
     ) {
         Column(
             modifier = Modifier
@@ -50,13 +51,28 @@ fun CalendarItem(
                 text = date.day, // day "Mon", "Tue"
                 modifier = Modifier.align(CenterHorizontally),
                 style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.background
+                color = when {
+                    date.isToday -> MaterialTheme.colorScheme.onPrimaryContainer
+                    date.isSelected -> MaterialTheme.colorScheme.background
+                    else -> MaterialTheme.colorScheme.tertiary
+                }
             )
             Text(
                 text = date.date.dayOfMonth.toString(), // date "15", "16"
-                modifier = Modifier.align(CenterHorizontally),
+                modifier = Modifier
+                    .weight(1f)
+                    .align(CenterHorizontally),
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.background
+                color = when {
+                    date.isToday -> MaterialTheme.colorScheme.primary
+                    date.isSelected -> MaterialTheme.colorScheme.background
+                    else -> MaterialTheme.colorScheme.onBackground
+                },
+                fontWeight = when {
+                    date.isToday -> FontWeight.Bold
+                    date.isSelected -> FontWeight.SemiBold
+                    else -> FontWeight.Normal
+                },
             )
         }
     }

@@ -67,5 +67,3 @@ class CalendarViewModel(private val dataSource: CalendarDataSource) : ViewModel(
         }
     }
 }
-
-
