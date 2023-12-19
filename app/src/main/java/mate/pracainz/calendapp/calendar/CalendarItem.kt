@@ -16,14 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import mate.pracainz.calendapp.calendar.model.CalendarUiState
-import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CalendarItem(
     date: CalendarUiState.Date,
-    onDateClickListener: (LocalDate) -> Unit,
-    onLongPressListener: (LocalDate) -> Unit,
+    calendarViewModel: CalendarViewModel, // Pass the CalendarViewModel instance
     isCurrentMonth: Boolean
 ) {
     Card(
@@ -31,8 +29,8 @@ fun CalendarItem(
             .padding(vertical = 2.dp, horizontal = 2.dp)
             .alpha(if (isCurrentMonth) 1f else 0.5f)
             .combinedClickable(
-                onClick = { onDateClickListener(date.date) },
-                onLongClick = { onLongPressListener(date.date) },
+                onClick = { calendarViewModel.onDateClicked(date.date) },
+                onLongClick = { calendarViewModel.onLongPress(date.date) },
             ),
         colors = CardDefaults.cardColors(
             containerColor = when {

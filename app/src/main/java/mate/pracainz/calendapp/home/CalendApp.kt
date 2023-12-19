@@ -29,7 +29,6 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -120,9 +119,6 @@ fun CalendApp(calendarViewModel: CalendarViewModel) {
         },
         drawerState = drawerState
     ) {
-        var selectedTabIndex by rememberSaveable {
-            mutableIntStateOf(0)
-        }
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -152,31 +148,14 @@ fun CalendApp(calendarViewModel: CalendarViewModel) {
                     )
             ) {
                 CalendarView(
-                    viewModel = calendarViewModel,
-                    onDateClickListener = { date ->
-                        calendarViewModel.onDateClicked(date)
-                        selectedTabIndex = 0
-                    },
-                    onLongPressListener = { date ->
-                        calendarViewModel.onLongPress(date)
-                        selectedTabIndex = 1
-                    },
-                    onPrevClickListener = {
-                        calendarViewModel.onPrevClick()
-                    },
-                    onNextClickListener = {
-                        calendarViewModel.onNextClick()
-                    },
-                    onResetClickListener = {
-                        calendarViewModel.onResetClick()
-                    }
+                    viewModel = calendarViewModel
                 )
                 Divider(
                     modifier = Modifier
                         .padding(top = 8.dp)
                 )
 
-                when (selectedTabIndex) {
+                when (calendarViewModel.selectedTabIndex.collectAsState().value) {
                     0 -> {
                         EventList(
                             calendarUiState = calendarViewModel.calendarUiState.collectAsState().value.copy(),

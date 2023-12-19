@@ -22,18 +22,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
 fun CalendarView(
     viewModel: CalendarViewModel, // Pass the CalendarViewModel instance
-    onDateClickListener: (LocalDate) -> Unit,
-    onLongPressListener: (LocalDate) -> Unit,
-    onPrevClickListener: () -> Unit,
-    onNextClickListener: () -> Unit,
-    onResetClickListener: () -> Unit,
 ) {
     val calendarUiState by viewModel.calendarUiState.collectAsState()
 
@@ -46,7 +40,7 @@ fun CalendarView(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            IconButton(onClick = { onPrevClickListener() }) {
+            IconButton(onClick = { viewModel.onPrevClick() }) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowLeft,
                     contentDescription = "Previous month"
@@ -63,14 +57,14 @@ fun CalendarView(
                     .align(Alignment.CenterVertically)
             )
 
-            IconButton(onClick = { onNextClickListener() }) {
+            IconButton(onClick = { viewModel.onNextClick() }) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowRight,
                     contentDescription = "Next month"
                 )
             }
 
-            IconButton(onClick = onResetClickListener) {
+            IconButton(onClick = { viewModel.onResetClick() }) {
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = "Reset to current date"
@@ -88,8 +82,7 @@ fun CalendarView(
                 items(weekDates) { date ->
                     CalendarItem(
                         date = date,
-                        onDateClickListener = onDateClickListener,
-                        onLongPressListener = onLongPressListener,
+                        calendarViewModel = viewModel, // Pass the CalendarViewModel instance
                         isCurrentMonth = date.date.month == calendarUiState.selectedDate.date.month
                     )
                 }
