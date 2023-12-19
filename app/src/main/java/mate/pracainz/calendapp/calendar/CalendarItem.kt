@@ -49,7 +49,8 @@ fun CalendarItem(
         ) {
             Text(
                 text = date.day, // day "Mon", "Tue"
-                modifier = Modifier.align(CenterHorizontally),
+                modifier = Modifier
+                    .align(CenterHorizontally),
                 style = MaterialTheme.typography.labelLarge,
                 color = when {
                     date.isToday -> MaterialTheme.colorScheme.onPrimaryContainer
