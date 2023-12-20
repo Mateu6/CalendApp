@@ -29,9 +29,11 @@ import mate.pracainz.calendapp.details.EventList
 import mate.pracainz.calendapp.details.EventListViewModel
 
 @Composable
-fun CalendApp(calendarViewModel: CalendarViewModel) {
-
-    val menuItems = menuItems // Import menuItems from MenuItems.kt
+fun CalendarScreen(
+    calendarViewModel: CalendarViewModel,
+    onNavigateToSettings: () -> Unit,
+    onNavigateToProfile: () -> Unit
+) {
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -45,8 +47,11 @@ fun CalendApp(calendarViewModel: CalendarViewModel) {
                 menuItems = menuItems,
                 selectedItemIndex = selectedItemIndex,
                 onMenuItemClick = { index ->
-                    selectedItemIndex = index
-                    // Handle item click logic here
+                    when (index) {
+                        0 -> {}
+                        1 -> onNavigateToProfile()
+                        2 -> onNavigateToSettings()
+                    }
                 },
                 onDrawerStateChange = {
                     scope.launch {
