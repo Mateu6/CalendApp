@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,6 +18,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import mate.pracainz.calendapp.calendar.model.CalendarUiState
 import java.time.format.DateTimeFormatter
 
@@ -33,16 +33,18 @@ fun EventList(
     ) {
         Column(
             modifier = Modifier
-                .padding(24.dp)
+                .padding(8.dp)
         ) {
             LazyRow(
-                modifier = Modifier.align(CenterHorizontally),
+                modifier = Modifier
+                    .zIndex(5f)
+                    .align(CenterHorizontally),
             ) {
                 item {
                     Text(
                         text = "Events for ${calendarUiState.selectedDate.date.format(DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy"))}",
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(8.dp),
+                        modifier = Modifier.padding(bottom = 8.dp),
                         color = MaterialTheme.colorScheme.primary,
                     )
                 }
@@ -52,7 +54,6 @@ fun EventList(
                 LazyColumn {
                     items(viewModel.events) { event ->
                         EventItemCard(event = event, onClick = { viewModel.handleEventClick(event) })
-                        Divider() // Add a divider between events
                     }
                 }
             } else {

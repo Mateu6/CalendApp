@@ -24,6 +24,11 @@ class EventListViewModel : ViewModel() {
     private fun generateSampleEvents(): List<EventItem> {
         return listOf(
             BasicEvent(title = "Sample Basic Event 1", description = "Description 1", dateOfExecution = LocalDate.now(), isToday = true),
+            BasicEvent(title = "Sample Basic Event 1", description = "Description 1", dateOfExecution = LocalDate.now(), isToday = true),
+            BasicEvent(title = "Sample Basic Event 1", description = "Description 1", dateOfExecution = LocalDate.now(), isToday = true),
+            BasicEvent(title = "Sample Basic Event 1", description = "Description 1", dateOfExecution = LocalDate.now(), isToday = true),
+            BasicEvent(title = "Sample Basic Event 1", description = "Description 1", dateOfExecution = LocalDate.now(), isToday = true),
+            BasicEvent(title = "Sample Basic Event 1", description = "Description 1", dateOfExecution = LocalDate.now(), isToday = true),
             TimerEvent(title = "Sample Timer Event 1", description = "Description 2", dateOfExecution = LocalDate.now(), startTime = LocalDateTime.now(), endTime = LocalDateTime.now().plusHours(1), isToday = false),
             ReminderEvent(title = "Sample Reminder Event 1", description = "Description 3", dateOfExecution = LocalDate.now(), reminderTime = LocalDateTime.now().plusMinutes(30), isToday = true),
             // Add more sample events as needed
