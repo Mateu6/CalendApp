@@ -69,8 +69,10 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("androidx.navigation:navigation-compose:2.7.6")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
 
-    val room_version = "2.6.1"
+
+    val room_version = "2.5.0"
 
     // FOR ROOM
     implementation("androidx.room:room-runtime:$room_version")

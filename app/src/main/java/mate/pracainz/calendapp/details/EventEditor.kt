@@ -29,6 +29,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import mate.pracainz.calendapp.details.model.BasicEvent
+import mate.pracainz.calendapp.details.model.EventEditorViewModel
+import mate.pracainz.calendapp.details.model.ReminderEvent
+import mate.pracainz.calendapp.details.model.TimerEvent
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)

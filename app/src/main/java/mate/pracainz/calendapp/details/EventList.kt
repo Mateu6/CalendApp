@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -20,6 +21,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import mate.pracainz.calendapp.calendar.model.CalendarUiState
+import mate.pracainz.calendapp.details.model.EventItem
+import mate.pracainz.calendapp.details.model.EventListViewModel
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -45,7 +48,11 @@ fun EventList(
                         text = "Events for ${calendarUiState.selectedDate.date.format(DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy"))}",
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.padding(bottom = 8.dp),
-                        color = MaterialTheme.colorScheme.primary,
+                        color = when {
+                            calendarUiState.selectedDate.isToday -> MaterialTheme.colorScheme.onPrimaryContainer
+                            calendarUiState.selectedDate.isSelected -> MaterialTheme.colorScheme.onTertiaryContainer
+                            else -> MaterialTheme.colorScheme.tertiary
+                        },
                     )
                 }
             }
@@ -77,13 +84,18 @@ fun EventItemCard(event: EventItem, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onClick() }
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiaryContainer)
     ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
         ) {
-            Text(text = event.title, style = MaterialTheme.typography.labelSmall)
+            Text(
+                text = event.title,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary
+            )
             Text(text = event.description ?: "", style = MaterialTheme.typography.labelSmall)
         }
     }

@@ -1,6 +1,6 @@
 package mate.pracainz.calendapp.calendar.model
 
-import mate.pracainz.calendapp.details.EventItem
+import mate.pracainz.calendapp.details.model.EventItem
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

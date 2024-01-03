@@ -1,4 +1,4 @@
-package mate.pracainz.calendapp.details
+package mate.pracainz.calendapp.details.model
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -21,7 +21,7 @@ fun CalendAppTopAppBar(onNavIconClick: () -> Unit) {
                 text = "CalendApp",
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Thin
+                fontWeight = FontWeight.W900
             )
         },
         navigationIcon = {

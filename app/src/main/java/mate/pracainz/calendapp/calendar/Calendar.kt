@@ -57,7 +57,7 @@ fun CalendarView(
                 modifier = Modifier
                     .weight(1f)
                     .align(Alignment.CenterVertically),
-                color = MaterialTheme.colorScheme.tertiary,
+                color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.titleLarge
             )
 

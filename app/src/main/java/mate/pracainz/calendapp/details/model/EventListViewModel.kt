@@ -1,4 +1,4 @@
-package mate.pracainz.calendapp.details
+package mate.pracainz.calendapp.details.model
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

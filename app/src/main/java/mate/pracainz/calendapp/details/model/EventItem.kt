@@ -1,4 +1,4 @@
-package mate.pracainz.calendapp.details
+package mate.pracainz.calendapp.details.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

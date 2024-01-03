@@ -24,9 +24,9 @@ import mate.pracainz.calendapp.base.menuItems
 import mate.pracainz.calendapp.calendar.CalendarView
 import mate.pracainz.calendapp.calendar.model.CalendarViewModel
 import mate.pracainz.calendapp.details.EventEditor
-import mate.pracainz.calendapp.details.EventEditorViewModel
+import mate.pracainz.calendapp.details.model.EventEditorViewModel
 import mate.pracainz.calendapp.details.EventList
-import mate.pracainz.calendapp.details.EventListViewModel
+import mate.pracainz.calendapp.details.model.EventListViewModel
 
 @Composable
 fun CalendarScreen(

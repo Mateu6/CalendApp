@@ -37,7 +37,7 @@ fun CalendarItem(
         colors = CardDefaults.cardColors(
             containerColor = when {
                 date.isToday -> MaterialTheme.colorScheme.primaryContainer
-                date.isSelected -> MaterialTheme.colorScheme.outline
+                date.isSelected -> MaterialTheme.colorScheme.tertiaryContainer
                 else -> MaterialTheme.colorScheme.background
             }
         )
@@ -54,7 +54,7 @@ fun CalendarItem(
                 style = MaterialTheme.typography.labelLarge,
                 color = when {
                     date.isToday -> MaterialTheme.colorScheme.onPrimaryContainer
-                    date.isSelected -> MaterialTheme.colorScheme.background
+                    date.isSelected -> MaterialTheme.colorScheme.onTertiaryContainer
                     else -> MaterialTheme.colorScheme.tertiary
                 }
             )
@@ -66,7 +66,7 @@ fun CalendarItem(
                 style = MaterialTheme.typography.headlineMedium,
                 color = when {
                     date.isToday -> MaterialTheme.colorScheme.primary
-                    date.isSelected -> MaterialTheme.colorScheme.background
+                    date.isSelected -> MaterialTheme.colorScheme.tertiary
                     else -> MaterialTheme.colorScheme.onBackground
                 },
                 fontWeight = when {
